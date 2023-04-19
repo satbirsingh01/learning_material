@@ -307,7 +307,7 @@ If you just want to discard the changes in your working directory:
 `git checkout -- [file]`
 
 You will have seen HEAD in the git log, HEAD normally points at the branch you are working on but using
-`git checkout [commit_sha]` will create a 'detatched head state' where it points at a commit rather than a branch. New commits on detached heads occasionally get deleted by git so don't leave them rolling around forever.
+`git checkout [commit_sha]` will create a 'detached head state' where it points at a commit rather than a branch. New commits on detached heads occasionally get deleted by git so don't leave them rolling around forever.
 Once you have channelled your inner Henry VIII and detached the head, to then save any changes you make you will need to checkout to a new branch, commit, checkout to main and merge your new branch.
 
 ```
@@ -321,7 +321,13 @@ git branch -d new_branch
 ```
 
 ### Going Back with git reset
-You can use git reset to go back to a previous commit sha
+You can use git reset to go back to a previous commit sha. Instead of detaching the head, the head and the branch ref moves to where you have pointed it. If you use the *--hard* tag it will wipe anything following the point you move to.
+
+`git reset [commit_sha] --hard`
+
+If you do not use the *--hard* tag and you know the commit sha of the head *before* you ran the reset command, then you can undo the reset with 
+
+`git reset [original_commit_sha]`
 
 
 ### Going Back with git restore
@@ -334,8 +340,22 @@ To discard changes to working directory files:
 
 `git restore <file>`
 
+To restore from an earlieer commit:
+
+`git restore --source [commit_sha] [file]`
+
+To restore two commits back from the end of the main branch:
+
+`git restore --source master~2 [file]`
+
 
 ### Going Back with git revert
+
+Rather than moving the head and branch reference pointers, git revert will take the previous commit and then make a new commit with the inverse of everything that has changed since. You cannot use this like reset to go back a few commits but it will preserve your commit history.
+
+`git revert HEAD`
+
+If you just want the changes reverted to the working directory and staging index but not commited then use the *-n* tag or the *--no-commit* tag
 
 <!-- -------------------------------------------------------- -->
 
