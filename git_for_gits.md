@@ -1,5 +1,5 @@
 # Git for Gits
-
+Bet you were'nt expecting this suckers. 
 Intended to be somewhere between a cheatsheet and a full guide, this document explains git functionality.
 
 I recommend using for quicker reference [GitLab's cheatsheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf).
@@ -159,7 +159,7 @@ git commit -m "workflow example written"
 git push origin main  
 ```
 
-## Removing Files from a Repository
+### Removing Files from a Repository
 
 To remove a file from a repository:
 
@@ -241,7 +241,7 @@ To rename the current branch:
 
 `git branch -m [new_name]`
 
-### Merging
+## Merging
 
 At some point you are going to want to merge these branches. The easiest way to do this is to create pull requests through GitHub and their equivilent on other services. Merging is done automatically by git which is quite nice really. Sometimes, however, git isn't always capable of combining the differences between the file on the two branches and it throws up a merge conflict, I find this easiest to deal with GitHub's merge conflict editor but it can be done with nano or other editors if you are using the CLI to merge.
 
@@ -260,7 +260,7 @@ A merge conflict will add the following dividers and both sets of code to the co
 
 You will need to analyse the changes to the file(s) yourself in a text editor and delete what you don't want, as well as the dividers, then save the file(s).
 
-### Feature Branch Model of Software Development
+## Feature Branch Model of Software Development
 
 A common practise in devloping software is to create a new branch for each new feature of the project, merge it with a dev branch and (optionally) delete the feature branch. The dev will potentially eventually be merged with main. This allows everyone to work without too much conflict on the same repo. Don't push to main until it's ready! 
 
@@ -301,7 +301,7 @@ There are (to my knowldege) three ways to go back to previous commits using reve
 ### Going Back with git checkout
 You will have seen HEAD in the git log, HEAD normally points at the branch you are working on but using
 `git checkout [commit_sha]` will create a 'detatched head state' where it points at a commit.
-You can channel you inner Henry VIII and detach the head, checking out to an earlier commit rather than a branch.
+You can channel your inner Henry VIII and detach the head, checking out to an earlier commit rather than a branch.
 
 `git checkout [commit]`  
 `git checkout 064eb77`
@@ -323,7 +323,7 @@ You can create a .gitignore file in the repository to tell git not to look for c
 
 [This page on w3schools explains the syntax adequately](https://www.w3schools.com/git/git_ignore.asp).
 
-### Amalgamate Two Repositories with Commit History
+## Amalgamate Two Repositories with Commit History
 
 Say I had another repository called *repo2* I wanted to merge into this *learning_materials* repo. First I would move into the learning_materials directory, add the remote of the repo2 repository, fetch repo2 with tags, merge the two with the `--allow-unrelated-histories` tag and remove the repo2 remote.
 
@@ -334,7 +334,7 @@ git merge --allow-unrelated-histories repo2/main
 git remote remove repo2
 ```
 
-### Git Stash
+## Git Stash
 
 ## Git Blame
 
