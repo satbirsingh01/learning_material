@@ -157,11 +157,49 @@ Sounds more complicated than it needs to (there's a trend forming). You can set 
 
 ## Branches
 
+Git branches allow for multiple people to work on different versions of the same repo which can later be merged together. This is incredibly useful for collaboration. A mediocre analogy for how branches split branches would be the phylogenetic evolutionary tree in biology - each branch diverges at a certain point, a common ancestor, and from there its DNA, or code, can be changed without affecting the other species, or branches. How merging works in this analogy is best left unthought about. I'm not getting paid for this. 
+
+Branch names cannot contain whitespace.
+
+Branches can be created through GitHub etc but to do so through the command line use:
+
+`git checkout -b [new_branch_name]`
+
+The *-b* is for a new branch. To switch between branches:
+
+`git checkout [branch_name]`
+
+### Merging
+
 ### Feature Branch Model of Software Development
+
+A common practise in devloping software is to create a new branch for each new feature of the project and merge it with a dev branch. Don't push to main until it's ready!
 
 ## Log
 
+To view the history of all the repository's commits in reverse chronoligical order (newest first):
+
+`git log`
+
+However this isn't particularly helpful most of the time, a more useful output is:
+
+`git log --oneline`
+
+The string of random letters and numbers is a short version of name of the commit, you can use this to go back to a previous version of the repository.
+
 ## Removing Files from a Repoository
+
+To remove a file from a repository:
+
+`git rm [file]`  
+`git commit -m [commit message]`
+`git push [remote] [branch]`
+
+To remove a file from a remote version of the repository and keep the local file:
+
+`git rm --cached [file]`  
+`git commit -m [commit message]`  
+`git push [remote] [branch]`  
 
 ## Recovering Previous Versions of a Repository
 
@@ -173,9 +211,34 @@ Sounds more complicated than it needs to (there's a trend forming). You can set 
 
 ## .gitignore
 
-### Merging
+
 
 ### Amalgamate Two Repositories with Commit History
 
 ### Stash
 
+## Git Blame
+
+Hate your colleagues? Update your CV. 
+
+Git blame is a troubleshooting tool which allows you to see who made changes by line.
+
+`git blame -L [start line, end line] [file]`
+
+`git blame -L 1,5 git_for_gits.md`
+
+-e will give you email address instead of user name.
+
+-w ignores changes to whitespace.
+
+-M ignores copied or cut lines and shows the original author instead
+
+-C ignores copied lines from another file and shows the original author instead.
+
+Because of how git blame works sometimes it's more useful to use git log with -S and a line of text to show the original changes to it. 
+
+`git log -S"To commit your staged changes ready to be pushed:" --pretty=format:'%h %an %ad %s'`
+
+## Epilogue
+
+Git has further functionality for almost all the above commands, [docs are available for futher reading](https://www.git-scm.com/docs). You have all the tools at your disposal to go forth and become a true Git Guru. Knock yourself out.
