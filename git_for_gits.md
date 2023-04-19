@@ -109,6 +109,10 @@ To update your local version of the repository with changes that have been uploa
 
 `git pull [remote name]`
 
+To get the changes from the remote without affecting your files. The changes are stored in the .git folder.
+
+`git fetch [remote]` 
+
 ### Adding Changes to the Staging Area - git add
 
 To add a file to the 'staging area' you use:
@@ -292,7 +296,7 @@ d3b1b84 workflow example written
 
 ## Recovering Previous Versions of a Repository
 
-There are three ways to go back to previous commits using revert, checkout and reset. 
+There are (to my knowldege) three ways to go back to previous commits using revert, checkout and reset. 
 
 ### Going Back with git checkout
 You will have seen HEAD in the git log, HEAD normally points at the branch you are working on but using
@@ -321,7 +325,14 @@ You can create a .gitignore file in the repository to tell git not to look for c
 
 ### Amalgamate Two Repositories with Commit History
 
+Say I had another repository called *repo2* I wanted to merge into this *learning_materials* repo. First I would move into the learning_materials directory, add the remote of the repo2 repository, fetch repo2 with tags, merge the two with the `--allow-unrelated-histories` tag and remove the repo2 remote.
 
+```
+git remote add repo2 [repo2_url/path]
+git fetch repo2 --tags
+git merge --allow-unrelated-histories repo2/main
+git remote remove repo2
+```
 
 ### Git Stash
 
