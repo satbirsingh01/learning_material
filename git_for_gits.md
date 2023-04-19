@@ -86,6 +86,10 @@ To rename a remote:
 
 `git remote rename [old name] [new name]`
 
+To delete a remote:
+
+`git remote rm [remote name]`
+
 <!-- -------------------------------------------------------- -->
 
 ## Using Git to Backup Your Files - The Git Workflow 
@@ -151,7 +155,9 @@ In this scenario the git repo is already initialised and the remote named *origi
 
 ### Setting the Upstream
 
-Sounds more complicated than it needs to (there's a trend forming). You can set both a default remote for your local repository so you do not have to specify it when pushing. You can set this default (known as the upstream) using:
+Sounds more complicated than it needs to (there's a trend forming). You can set both a default remote and branch for your local repository so you do not have to specify it when pushing. You can set a default remote branch (known as the upstream) while pushing using:
+
+`git push --set-upstream [remote] [branch]`
 
 ### Additional Useful Workflow Commands (diff and status)
 
@@ -161,7 +167,7 @@ Git branches allow for multiple people to work on different versions of the same
 
 Branch names cannot contain whitespace.
 
-Branches can be created through GitHub etc but to do so through the command line use:
+Branches can be created through GitHub etc but to do so through the command line and switch to the new branch, use:
 
 `git checkout -b [new_branch_name]`
 
@@ -169,11 +175,41 @@ The *-b* is for a new branch. To switch between branches:
 
 `git checkout [branch_name]`
 
+It's better to commit your changes before checking out to another branch but you can use git stash as well (see below).
+
+To list branches in the local repo:
+
+`git branch -vv`
+
+*-vv* gives you the latest commit as well as the branch name, nott necessary.
+
+To list all remote branches:
+
+`git branch -a`
+
+To create a branch without switching to it (checking out):
+
+`git branch [new_branch_name]` 
+
+To delete a branch:
+
+`git branch -d [branch_name]` 
+
+If you use *-D* instead of *-d* it will delete the branch even if it has unmerged changes.
+
+To rename the current branch:
+
+`git branch -m [new_name]`
+
 ### Merging
+
+At some point you are going to want to merge these branches. The easiest way to do this is to create pull requests through GitHub and their equivilent on other services. Merging is done automatically by git which is quite nice really. Sometimes, however, git isn't always capable of combining the differences between the file on the two branches and it throws up a merge conflict, I find this easiest to deal with GitHub's merge conflict editor but it can be done with nano or other editors if you are using the CLI to merge.
 
 ### Feature Branch Model of Software Development
 
-A common practise in devloping software is to create a new branch for each new feature of the project and merge it with a dev branch. Don't push to main until it's ready!
+A common practise in devloping software is to create a new branch for each new feature of the project and merge it with a dev branch. Don't push to main until it's ready! 
+
+(Don't check the log of this repo).
 
 ## Log
 
@@ -215,7 +251,7 @@ To remove a file from a remote version of the repository and keep the local file
 
 ### Amalgamate Two Repositories with Commit History
 
-### Stash
+### Git Stash
 
 ## Git Blame
 
