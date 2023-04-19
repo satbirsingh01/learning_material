@@ -161,6 +161,22 @@ Sounds more complicated than it needs to (there's a trend forming). You can set 
 
 ### Additional Useful Workflow Commands (diff and status)
 
+To see what's going on with your git workflow, what's staged, changes, your current branch:
+
+`git status`
+
+To see the difference between your local files and what has been staged for your next commit:
+
+`git diff`
+
+You can specify a file to see changes:
+
+`git diff [file]`
+
+To see changes between the staged area and the repo:
+
+`git diff --staged [file]`
+
 ## Branches
 
 Git branches allow for multiple people to work on different versions of the same repo which can later be merged together. This is incredibly useful for collaboration. A mediocre analogy for how branches split branches would be the phylogenetic evolutionary tree in biology - each branch diverges at a certain point, a common ancestor, and from there its DNA, or code, can be changed without affecting the other species, or branches. How merging works in this analogy is best left unthought about. I'm not getting paid for this. 
@@ -205,9 +221,24 @@ To rename the current branch:
 
 At some point you are going to want to merge these branches. The easiest way to do this is to create pull requests through GitHub and their equivilent on other services. Merging is done automatically by git which is quite nice really. Sometimes, however, git isn't always capable of combining the differences between the file on the two branches and it throws up a merge conflict, I find this easiest to deal with GitHub's merge conflict editor but it can be done with nano or other editors if you are using the CLI to merge.
 
+To merge two branches you need to consider the direction of the merge. Switch to the branch you are merging *to* (i.e. the one you will keep working on after if you are going to delete one of them) and run:
+
+`git merge [branch_merging_from]`
+
+#### Merge Conflicts
+
+A merge conflict will add the following dividers and both sets of code to the conflicted file(s):   
+`<<<<<<< HEAD`  
+`[original code]`  
+`=======`  
+`[new code]`  
+`>>>>>>> [branch_merging_from]`  
+
+You will need to analyse the changes to the file(s) yourself in a text editor and delete what you don't want, as well as the dividers, then save the file(s).
+
 ### Feature Branch Model of Software Development
 
-A common practise in devloping software is to create a new branch for each new feature of the project and merge it with a dev branch. Don't push to main until it's ready! 
+A common practise in devloping software is to create a new branch for each new feature of the project, merge it with a dev branch and (optionally) delete the feature branch. The dev will potentially eventually be merged with main. This allows everyone to work without too much conflict on the same repo. Don't push to main until it's ready! 
 
 (Don't check the log of this repo).
 
