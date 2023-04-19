@@ -125,7 +125,7 @@ To add all the files in the directory:
 
 The full
 
-### git commit
+### Commiting Staged Files - git commit
 
 To commit your staged changes ready to be pushed:
 
@@ -133,7 +133,7 @@ To commit your staged changes ready to be pushed:
 
 If there is no whitespace in your message you do not need the quotes. The *-m* tag stands for message. Git will not let you commit without a message and if you forget to include one in the command it will send you into a CLI text editor (nano/vim) where you can write one and subsequently exit the editor.
 
-### git push
+### Uploading Changes to a Remote - git push
 
 To push your committed changes to a remote:
 
@@ -149,9 +149,29 @@ Below demonstrates how I uploaded this markdown file and all the subsequent chan
 
 In this scenario the git repo is already initialised and the remote named *origin* has been added and points towards https://github.com/laportag/learning_material.git. Changes have been made to the git_for_gits.md file since the last commit.
 
-`git add git_for_gits.md`  
-`git commit -m "workflow example written"`  
-`git push origin main`  
+```
+git add git_for_gits.md  
+git commit -m "workflow example written" 
+git push origin main  
+```
+
+## Removing Files from a Repository
+
+To remove a file from a repository:
+
+```
+git rm [file]  
+git commit -m [commit message]
+git push [remote] [branch]
+```
+
+To remove a file from a remote version of the repository and keep the local file:
+
+```
+git rm --cached [file]  
+git commit -m [commit message]  
+git push [remote] [branch]
+```
 
 ### Setting the Upstream
 
@@ -248,29 +268,44 @@ To view the history of all the repository's commits in reverse chronoligical ord
 
 `git log`
 
+Press q to quit the log.
+
 However this isn't particularly helpful most of the time, a more useful output is:
 
 `git log --oneline`
 
-The string of random letters and numbers is a short version of name of the commit, you can use this to go back to a previous version of the repository.
 
-## Removing Files from a Repoository
 
-To remove a file from a repository:
+The string of random letters and numbers is a short version of name of the commit, the commit sha, you can use this to go back to a previous version of the repository. *--tree* can also be useful.
 
-`git rm [file]`  
-`git commit -m [commit message]`
-`git push [remote] [branch]`
+Example showing me vaguelly messing up my repo:
 
-To remove a file from a remote version of the repository and keep the local file:
-
-`git rm --cached [file]`  
-`git commit -m [commit message]`  
-`git push [remote] [branch]`  
+```
+$ git log --oneline
+156d629 (HEAD, origin/main, origin/HEAD) git status git diff
+064eb77 (main) commit before creating merge conflict as demo
+cd32102 branches, yeah this is commit order is eclectic
+0d9ebff random git blame stuff cause it's a laugh init
+d3b1b84 workflow example written
+9484006 Initial commit 
+```
 
 ## Recovering Previous Versions of a Repository
 
+There are three ways to go back to previous commits using revert, checkout and reset. 
 
+### Going Back with git checkout
+You will have seen HEAD in the git log, HEAD normally points at the branch you are working on but using
+`git checkout [commit_sha]` will create a 'detatched head state' where it points at a commit.
+You can channel you inner Henry VIII and detach the head, checking out to an earlier commit rather than a branch.
+
+`git checkout [commit]`  
+`git checkout 064eb77`
+
+### Going Back with git reset
+You can use git reset to go back to a previous commit sha
+
+### Going Back with git revert
 
 <!-- -------------------------------------------------------- -->
 
@@ -278,9 +313,15 @@ To remove a file from a remote version of the repository and keep the local file
 
 ## .gitignore
 
+You can create a .gitignore file in the repository to tell git not to look for changes or add these files to the repo. This is useful for things like virtual environments where you don't need to upload, for example, various python modules but just a requirements.txt. You could then use the .gitignore to stop git trying to add the /venv/ folder to the repo.
 
+.gitignore files have one entry per line. They can be used to ignore directories or files and can be combined with wildcards.
+
+[This page on w3schools explains the syntax adequately](https://www.w3schools.com/git/git_ignore.asp).
 
 ### Amalgamate Two Repositories with Commit History
+
+
 
 ### Git Stash
 
