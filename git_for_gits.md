@@ -1,5 +1,5 @@
 # Git for Gits
-Bet you were'nt expecting this suckers. 
+
 Intended to be somewhere between a cheatsheet and a full guide, this document explains git functionality.
 
 I recommend using for quicker reference [GitLab's cheatsheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf).
