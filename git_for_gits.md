@@ -19,7 +19,7 @@ Whilst git is decentralised in essence, most people use repository hosting servi
 
 Git has various GUI tools that can be used but to understand it it is better to learn the command line for it to understand what those GUIs are doing and in case you have to use a repo on a remote machine without such an interface.
 
-Learning git is a process but in time will become second nature.
+Learning git is a process but in time will become second nature. It is not an enjoyable process. Git was aptly named.
 
 ## Git Basics
 
