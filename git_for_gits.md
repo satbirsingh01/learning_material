@@ -9,7 +9,11 @@ I recommend using for quicker reference [GitLab's cheatsheet](https://about.gitl
 
 Git is a version control software, it's fairly useful for both backing up and recovering work as well as working collaboratively with a team.
 
-You can install git from the [git website](https://git-scm.com/).
+You can install git from the [git website](https://git-scm.com/). Once installed configure your username and email:
+```
+git config --global user.name "name"
+git config --global user.email "email@email.com"
+```
 
 Whilst git is decentralised in essence, most people use repository hosting services such as [GitHub](https://github.com/), [BitBucket](https://bitbucket.org/) or [GitLab](https://gitlab.com/). They are all relatively similar whilst offering slightly different features in addition to the git functionality.
 
@@ -40,9 +44,6 @@ To clone this repository to your machine:
 `git clone https://github.com/laportag/learning_material.git`
 
 
-
-<!-- -------------------------------------------------------- -->
-
 ## Initialising a Repository
 
 To initialise a folder as a git repository move to the folder in your terminal and run:
@@ -56,9 +57,6 @@ You can also run:
 to create a new folder of [repo name] and initialise the repository.
 
 Repositories can also be initialised on such GitHub and other hosting sites by pressing 'New Repository'.
-
-<!-- -------------------------------------------------------- -->
-
 
 ## Remotes
 
@@ -90,7 +88,6 @@ To delete a remote:
 
 `git remote rm [remote name]`
 
-<!-- -------------------------------------------------------- -->
 
 ## Using Git to Backup Your Files - The Git Workflow 
 
@@ -127,7 +124,8 @@ To add all the files in the directory:
 
 `git add .`
 
-The full
+To remove staged files from the staging area:
+`git reset HEAD [file]`
 
 ### Commiting Staged Files - git commit
 
@@ -136,6 +134,11 @@ To commit your staged changes ready to be pushed:
 `git commit -m "[your commit message]"`
 
 If there is no whitespace in your message you do not need the quotes. The *-m* tag stands for message. Git will not let you commit without a message and if you forget to include one in the command it will send you into a CLI text editor (nano/vim) where you can write one and subsequently exit the editor.
+
+If you commit too early you can still add more files and then ammend the commit 
+
+`git add [file]`  
+`git commit --amend`
 
 ### Uploading Changes to a Remote - git push
 
@@ -296,18 +299,41 @@ d3b1b84 workflow example written
 
 ## Recovering Previous Versions of a Repository
 
-There are (to my knowldege) three ways to go back to previous commits using revert, checkout and reset. 
+There are a few ways to go back to previous commits using git. They have different functionality as below.
 
 ### Going Back with git checkout
-You will have seen HEAD in the git log, HEAD normally points at the branch you are working on but using
-`git checkout [commit_sha]` will create a 'detatched head state' where it points at a commit.
-You can channel your inner Henry VIII and detach the head, checking out to an earlier commit rather than a branch.
 
-`git checkout [commit]`  
-`git checkout 064eb77`
+If you just want to discard the changes in your working directory:
+`git checkout -- [file]`
+
+You will have seen HEAD in the git log, HEAD normally points at the branch you are working on but using
+`git checkout [commit_sha]` will create a 'detatched head state' where it points at a commit rather than a branch. New commits on detached heads occasionally get deleted by git so don't leave them rolling around forever.
+Once you have channelled your inner Henry VIII and detached the head, to then save any changes you make you will need to checkout to a new branch, commit, checkout to main and merge your new branch.
+
+```
+git checkout 064eb77
+[make changes]
+git checkout -b new_branch
+git commit -m "attempting to fix my shocking code"
+git checkout main
+git merge new_branch
+git branch -d new_branch
+```
 
 ### Going Back with git reset
 You can use git reset to go back to a previous commit sha
+
+
+### Going Back with git restore
+
+To unstage files:
+
+`git restore --staged [file]`
+
+To discard changes to working directory files:
+
+`git restore <file>`
+
 
 ### Going Back with git revert
 
@@ -357,6 +383,10 @@ Git blame is a troubleshooting tool which allows you to see who made changes by 
 Because of how git blame works sometimes it's more useful to use git log with -S and a line of text to show the original changes to it. 
 
 `git log -S"To commit your staged changes ready to be pushed:" --pretty=format:'%h %an %ad %s'`
+
+## Rebasing
+
+Merging on steroids.
 
 ## Epilogue
 
