@@ -78,6 +78,14 @@ To view the remotes of the repository:
 
 The *-v* tag stands for verbose and generally provides more information in the output. In the case of git, the *-v* tag also displays the url of each remote in addition to the name it has been given.
 
+To change the url of a remote:
+
+`git remote set-url [remote name] [remote url]`
+
+To rename a remote:
+
+`git remote rename [old name] [new name]`
+
 <!-- -------------------------------------------------------- -->
 
 ## Using Git to Backup Your Files - The Git Workflow 
@@ -137,13 +145,13 @@ Below demonstrates how I uploaded this markdown file and all the subsequent chan
 
 In this scenario the git repo is already initialised and the remote named *origin* has been added and points towards https://github.com/laportag/learning_material.git. Changes have been made to the git_for_gits.md file since the last commit.
 
-`git add 
-
-
+`git add git_for_gits.md`  
+`git commit -m "workflow example written"`  
+`git push origin main`  
 
 ### Setting the Upstream
 
-Sounds more complicated than it needs to (there's a trend forming). If you have been following along you may have noticed the commands *git push* and *git pull* throw back an error. 
+Sounds more complicated than it needs to (there's a trend forming). You can set both a default remote for your local repository so you do not have to specify it when pushing. You can set this default (known as the upstream) using:
 
 ### Additional Useful Workflow Commands (diff and status)
 
