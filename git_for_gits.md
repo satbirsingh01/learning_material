@@ -285,16 +285,23 @@ However this isn't particularly helpful most of the time, a more useful output i
 
 The string of random letters and numbers is a short version of name of the commit, the commit sha, you can use this to go back to a previous version of the repository. *--tree* can also be useful.
 
-Example showing me vaguelly messing up my repo:
+Example of me demonstrating pristine commit history best practice:
 
 ```
 $ git log --oneline
-156d629 (HEAD, origin/main, origin/HEAD) git status git diff
-064eb77 (main) commit before creating merge conflict as demo
+6b9a689 (HEAD -> main, origin/main, origin/HEAD) added attempt at humour
+9d98ab2 revert
+6eb2a9c can't even remember but I'm sure it was useful
+566db89 removed misspelt easter egg
+986c051 ln2 message for git blame test
+d815745 Amalgamate Two Repositories with Commit History
+3d2d7a8 let's pretend that didn't happen
+156d629 git status git diff
+064eb77 commit before creating merge conflict as demo
 cd32102 branches, yeah this is commit order is eclectic
 0d9ebff random git blame stuff cause it's a laugh init
 d3b1b84 workflow example written
-9484006 Initial commit 
+9484006 Initial commit
 ```
 
 ## Recovering Previous Versions of a Repository
