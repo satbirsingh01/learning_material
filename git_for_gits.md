@@ -368,7 +368,7 @@ If you just want the changes reverted to the working directory and staging index
 
 ## More Advanced Git
 
-## .gitignore
+### .gitignore
 
 You can create a .gitignore file in the repository to tell git not to look for changes or add these files to the repo. This is useful for things like virtual environments where you don't need to upload, for example, various python modules but just a requirements.txt. You could then use the .gitignore to stop git trying to add the /venv/ folder to the repo.
 
@@ -376,7 +376,7 @@ You can create a .gitignore file in the repository to tell git not to look for c
 
 [This page on w3schools explains the syntax adequately](https://www.w3schools.com/git/git_ignore.asp).
 
-## Amalgamate Two Repositories with Commit History
+### Amalgamate Two Repositories with Commit History
 
 Say I had another repository called *repo2* I wanted to merge into this *learning_materials* repo. First I would move into the learning_materials directory, add the remote of the repo2 repository, fetch repo2 with tags, merge the two with the `--allow-unrelated-histories` tag and remove the repo2 remote.
 
@@ -387,7 +387,7 @@ git merge --allow-unrelated-histories repo2/main
 git remote remove repo2
 ```
 
-## Git Stash
+### Git Stash
 
 Git stash can store changes you've made to the working directory that you aren't ready to commit. You can then keep working, checkout, commit etc and retrieve the stash afterwards. To create a stash:
 
@@ -423,7 +423,7 @@ To retrieve a stash when you have more than one:
 
 `git stash pop stash@{1}`
 
-## Git Blame
+### Git Blame
 
 Hate your colleagues? Update your CV. 
 
@@ -445,7 +445,7 @@ Because of how git blame works sometimes it's more useful to use git log with -S
 
 `git log -S"To commit your staged changes ready to be pushed:" --pretty=format:'%h %an %ad %s'`
 
-## Rebasing
+### Rebasing
 
 Merging on steroids. Like *git merge*, *git rebase* is used to integrate changes from one branch to another. Instead of merging the two branches, rebase instead takes all the commits from one branch, deletes the branch, and adds the commits to the end of the second branch.
 
@@ -469,7 +469,43 @@ I nicked the rebase bit from [Atlassian](https://www.atlassian.com/git/tutorials
 
 Don't use git rebase on repsitories that others are working on, git will get confused.
 
-## Forking
+### Forking
+
+GitHub allows you to fork other user's repositories, creating a copy of that repo you can work on yourself and suggest pull requests to the original repo. This is commonly used in Open Source projects for bug fixing etc. 
+
+If you were to fork a repository and you later on wanted to pull updates from the original author's repo, you would need to add that repo as a remote, pull from that remote and push to the remote of your own repository. To use this repository as the original you have forked as an example:
+
+```
+git remote add upstream https://github.com/laportag/learning_material.git
+git fetch upstream
+git checkout main
+git merge upstream/main
+```
+
+You can also use the *Sync fork* option in the GitHub web UI.
+Merging on steroids. Like *git merge*, *git rebase* is used to integrate changes from one branch to another. Instead of merging the two branches, rebase instead takes all the commits from one branch, deletes the branch, and adds the commits to the end of the second branch.
+
+To use rebase to integrate changes from a branch named branch2 into the main:
+```
+git checkout branch2
+git rebase main
+```
+
+Because rebase creates a linear commit history it makes it easier to use git log.
+
+`git rebase -i [branch]` uses the interactive tag and will send you into a text editor where you can edit the new commit history that rebase creates. It will look like this:
+```
+pick 33d5b7a Message for commit #1
+fixup 9480b3d Message for commit #2
+pick 5c67e61 Message for commit #3
+```
+Changing pick to fixup combines that commit with the previous one. Change the 'Message for commit #1' part for the commit message.
+
+I nicked the rebase bit from [Atlassian](https://www.atlassian.com/git/tutorials/merging-vs-rebasing) which has good diagrams.
+
+Don't use git rebase on repsitories that others are working on, git will get confused.
+
+### Forking
 
 GitHub allows you to fork other user's repositories, creating a copy of that repo you can work on yourself and suggest pull requests to the original repo. This is commonly used in Open Source projects for bug fixing etc. 
 
