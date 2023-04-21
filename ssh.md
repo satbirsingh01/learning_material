@@ -200,7 +200,11 @@ User - Username
 
 IdentityFile - The location of a public key file (*.pem* etc)
 
+Port - Custom port
+
 You can then ssh into one of the specified machines using `ssh [Host]`.
+
+For further reading on the config file [see here](https://linuxize.com/post/using-the-ssh-config-file/).
 
 ## Copying files to a remote machine
 
