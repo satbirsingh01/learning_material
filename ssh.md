@@ -1,6 +1,8 @@
 # SSH - Secure Shell
 
-SSH is used to connect to remote machines securely, usually on port 22. Data that is transferred is encrypted and can use public keys to authenticate a log in. This document won't explain how SSH and keys, work but it will tell you how to use them. All hosts and IPs used as examples have been changed so they won't work and you can stop trying to force your way into my machines.
+SSH is used to connect to remote machines securely, usually on port 22. Data that is transferred is encrypted and can use public keys to authenticate a log in. This document won't explain how SSH and keys, work but it will tell you how to use them. You'll need a more advanced networking guide for that, I haven't the foggiest.
+
+All hosts and IPs used as examples have been changed so they won't work and you can stop trying to force your way into my machines.
 
 SSH is a topic where there are some differences between Windows and Unix operating systems, though the ssh commands themselves will generally remain the same.
 
@@ -75,11 +77,11 @@ Sometimes the ssh server of the remote machine is configured to a different port
 
 ## SSH Keys
 
-Often the ssh of a machine will be configured so that authentication by password is disabled, other times you will want to connect in a way that makes the password input is troublesome, at others you may just feel lazy. In these cases you can use an identity key instead of a password for authentication. 
+Often the ssh of a machine will be configured so that authentication by password is disabled, other times you will want to connect in a way that makes the password input is troublesome, at others you may just feel lazy. In these cases you can use an identity key instead of a password for authentication.
 
-Using a key to authenticate via ssh is far more secure than using password authentication; ssh is often used in malicious attacks that attempt to brute force their way into machines with various usernames and passwords. Key based authentication is done on the local machine so your authentication details are not exposed to the network; it is very secure and best practise.
+Keys look complicated but they are just a string of characters used instead of a password. Using a key to authenticate via ssh is far more secure than using password authentication; ssh is often used in malicious attacks that attempt to brute force their way into machines with various usernames and passwords. Key based authentication is done on the local machine so your authentication details are not exposed to the network; it is very secure and best practise.
 
-When you generate an SSH key pair on a machine it creates a pair of keys - the public key and the private key. *Never share the private key.* The file for the public key is also known as the identity file. In order for a key-based authentication to pass, a local machine must know the public key of the remote machine. The remote machine must have the private key confgured so that when the authentication is attempted, the two keys can view each other and pass, only the correct pairing will pass authentication.
+When you generate an SSH key pair on a machine it creates a pair of keys - the public key and the private key. *Never share the private key.* The file for the public key is also known as the identity file. In order for a key-based authentication to pass, a local machine must know the public key of the remote machine. The remote machine must have the private key configured so that when the authentication is attempted, the two keys can view each other and pass, only the correct pairing will pass authentication.
 
 SSH keys are a hash and can be saved in different file formats, [this link demonstrates the difference between *rsa* and *pem*.](https://hstechdocs.helpsystems.com/manuals/globalscape/eft7-3/mergedprojects/eft/server_ssh_key_formats.htm#:~:text=EFT%20imports%20the%20PEM%20format,key%20on%20a%20Linux%20computer.)
 
@@ -97,7 +99,15 @@ Arguments and tags can be included in the ssh-keygen for more complex functional
 
 Possible values are *dsa*, *ecdsa*, *ecdsa-sk*, *ed25519*, *ed25519-sk* and *rsa*.
 
-Remember that a key will only work with it's pair, if you lose the credentials you will have to generate a new key pair.
+Remember that a key will only work with it's pair, if you lose the credentials you will have to generate a new key pair and update all your remote systems with it.
+
+#### Adding Keys to a Windows Account with ssh-agent
+
+```
+Get-Service ssh-agent | Set-Service -StartupType Automatic
+Start-Service ssh-agent
+ssh-add $env:USERPROFILE\.ssh\[key_file]
+```
 
 ### Connecting via ssh with a Key pair
 
@@ -149,7 +159,18 @@ Each entry will look like:
 
 #### Windows 10
 
+```
+# Get the public key file generated previously on your client
+$authorizedKey = Get-Content -Path $env:USERPROFILE\.ssh\[key_file]
 
+# Set a script to copy the key to the remote authorized_keys file
+$remotePowershell = "powershell Add-Content -Force -Path $env:ProgramData\ssh\administrators_authorized_keys -Value '$authorizedKey';icacls.exe ""$env:ProgramData\ssh\administrators_authorized_keys"" /inheritance:r /grant ""Administrators:F"" /grant ""SYSTEM:F"""
+
+# Connect and run the script
+ssh [username]@[host/IP_address] $remotePowerShell
+```
+
+Alternatively, do it manually. You're on Windows, use notepad or whatever.
 
 ## The .ssh/config File
 
@@ -183,8 +204,123 @@ You can then ssh into one of the specified machines using `ssh [Host]`.
 
 ## Copying files to a remote machine
 
-### scp
-### sftp
-### gui tools
-#### vsc
-#### filezilla
+So editing files and running commands in a remote shell is all well and good, but what if you want to copy files to a remote machine?
+
+### SCP - Secure Copy
+
+Built off SSH and RCP (remote copy), SCP is a tool for securely copying files that are encrypted during the transfer. SCP is often preinstalled but unlike SFTP and Rsync is not being actively developed and has fewer features. Generally they are better options than SCP if available.
+
+To copy a file to a remote machine with scp:
+
+`scp [relative/path/to/file] [user]@[remote_host]:/path/of/directory/to/save/file`
+
+To copy from a remote machine:
+
+`scp [user]@[remote_host]:/path/to/file "/path/of/directory/to/save/file"`
+
+To copy a directory, the recursive tag is required:
+
+`scp -r -C [relative/path/to/directory] [user]@[remote_host]:/path/of/directory/to/save/directory`
+
+The *-r* is recursive and the *-C* compresses files whilst transferring, not essential but a decent idea for bigger transfers.
+
+To copy between two remote systems:
+
+`scp user@host1.com:/path/to/directory/file.txt user@host2.com:/path/to/other/directory`
+
+If you want this routed through your local system, use the *-3* tag:
+
+`scp -3 user@host1.com:/path/to/directory/file.txt user@host2.com:/path/to/other/directory`
+
+### SFTP - Secure File Transfer Protocol
+
+SFTP is an extension of SSH and is used for secure file transfers and management over a network.
+
+You can connect to a remote machine using sftp instead of ssh as the command:
+
+`sftp root@172.105.186.216`
+
+Password and key authentication work in the same manner as normal. You will be entered into an sftp shell where you can input commands.
+
+```
+put - Upload a file
+get - Download file
+cd [dir] - Change remote directory to [dir]
+lcd [dir]  - Change local directory to [dir]
+pwd - Print the working directory of the remote machine
+lpwd - Print the working directory of the local machine
+ls - List remote working directory files
+lls - List local working directory files
+mkdir - Make remote directory
+lmkdir - Make local directory
+exit - Quit the shell
+! - pop out of the shell until exit is entered
+```
+
+Download a file from remote machine with sftp:
+
+```
+# Log in via sftp, enter password if prompted
+sftp root@host1
+# Use cd and lcd to change the remote and local directories for the transfer
+cd docs
+lcd home/documents
+# Use get to copy files to local machine
+get [file]
+exit
+```
+
+SFTP has other functionality but this covers the basics.
+
+### Rsync - Remote Sync
+
+Rsync only moves changed portions of files, smart eh? Set up key based authentication between two machines and Rsync can move files and keep directories synchronised. It's quite a useful backup tool.
+
+To sync the contents of one folder to another on the same machine:
+
+`rsync -a dir1/ dir2`
+
+If you do not include the slash after dir1, dir1 itself will be copied into dir2 rather than its contents.
+
+*-a* (archive) works similarly to *-r* (recursive) but also preserves symbolic links and special files.
+
+To test an Rsync command:
+
+`rsync -anv dir1/ dir2`
+
+The *-n* tag executes the command as a dry run rather than in actuality,*-v* is verbose.
+
+To push a local folder to a remote system:
+
+`rsync -a ~/dir1 username@remote_host:destination_directory`
+
+To pull a remote folder to a local system:
+
+`rsync -a username@remote_host:/home/username/dir1 place_to_sync_on_local_machine`
+
+Other useful tags:
+
+```
+-z
+# Compresses uncompressed files during the transfer
+-P
+# Displays a progress bar and allows the resumption of an interrupted transfer
+--delete
+# Ensures files are deleted from the synched folder when deleted from the original
+--exclude=[pattern]
+# Excludes files from the sync matching the pattern
+--backup --backup-dir=[directory]
+# Stores backups of files in the specified directory
+```
+
+### GUI Tools
+
+There are plenty of applications that use ssh to connect to a remote machine in a more interactive manner than the traditional command line interface.
+
+#### FileZilla
+
+FileZilla is an old but perfectly capable application for transferring files between machines over various protocols, including SFTP. How to use FileZilla is fairly self-explanatory.
+
+#### Visual Studio Code
+
+If the *Remote Explorer*, *Remote - SSH*, *Remote - SSH: Editing Configuration Files* extensions are installed and the *.ssh/config* file has entries, you can use the Remote Explorer extension to edit remote files. Ensure the remote option is selected in the dropdown and select a remote to connect to over SSH, I'd suggest connecting in a new window. This is a great way in particular to edit code as an alternative to using nano or vim in an ssh shell, but the tool can also be used to copy files.
