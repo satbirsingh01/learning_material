@@ -135,7 +135,7 @@ To commit your staged changes ready to be pushed:
 
 If there is no whitespace in your message you do not need the quotes. The *-m* tag stands for message. Git will not let you commit without a message and if you forget to include one in the command it will send you into a CLI text editor (nano/vim) where you can write one and subsequently exit the editor.
 
-If you commit too early you can still add more files and then ammend the commit 
+If you commit too early you can still add more files and then amend the commit 
 
 `git add [file]`  
 `git commit --amend -m "[message]`
