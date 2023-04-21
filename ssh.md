@@ -48,15 +48,30 @@ To generate ssh key pairs on linux:
 
 You will be prompted with an option of where to save the key files `/home/[user]/.ssh/id_rsa`. Press enter to confirm. (The *.ssh* folder is where you will find the files used by the ssh client and server.) You will be prompted to enter a passphrase for the encryption generation, either leave it blank or choose a password and enter it twice. If you decide to make a password you will have to enter it whenever you use the key. The private key is id_rsa and the public key is id_rsa.pub.
 
-The idea is to copy your public id to the remote machine you want to connect to in the future.
-
-`ssh-copy-id username@remote_host`
-
-
 #### Windows
 
 Key files in Windows are either *.pem* or *.ICantRemember* Windows does not have built in functions to create ssh keys so we have to get more creative.
 
+### Copying a Key to a Remote Machine
+
+#### Linux
+
+If you copy your public id to the remote machine, you do not have to specify it in the ssh command. The public keys of all the machines authorised to access the remote machine via ssh are stored in `.ssh/authorized_keys`
+
+There is a command that can copy a generated public key to a remote authorized_keys file automatically:
+
+`ssh-copy-id [username]@[host/IP_adrees]`
+
+If `ssh-copy-id` is not available you will have to do it manually. Password authentication must be enabled for this process:
+
+```
+```
+
+To perform this process in one line of code (you will have to enter the password):
+
+`cat ~/.ssh/id_rsa.pub | ssh [username]@[host/IP_adrees] "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys"`
+
+#### Windows
 
 ## config file
 
