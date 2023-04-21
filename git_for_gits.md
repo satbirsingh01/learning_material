@@ -138,7 +138,7 @@ If there is no whitespace in your message you do not need the quotes. The *-m* t
 If you commit too early you can still add more files and then ammend the commit 
 
 `git add [file]`  
-`git commit --amend`
+`git commit --amend -m "[message]`
 
 ### Uploading Changes to a Remote - git push
 

@@ -254,7 +254,7 @@ lls - List local working directory files
 mkdir - Make remote directory
 lmkdir - Make local directory
 exit - Quit the shell
-! - pop out of the shell until exit is entered
+! - pop out of the shell until 'exit' is entered to the terminal
 ```
 
 Download a file from remote machine with sftp:
@@ -301,16 +301,17 @@ To pull a remote folder to a local system:
 Other useful tags:
 
 ```
--z
+
 # Compresses uncompressed files during the transfer
--P
+-z
 # Displays a progress bar and allows the resumption of an interrupted transfer
---delete
+-P
 # Ensures files are deleted from the synched folder when deleted from the original
---exclude=[pattern]
+--delete
 # Excludes files from the sync matching the pattern
---backup --backup-dir=[directory]
+--exclude=[pattern]
 # Stores backups of files in the specified directory
+--backup --backup-dir=[directory]
 ```
 
 ### GUI Tools
