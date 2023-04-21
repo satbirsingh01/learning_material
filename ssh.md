@@ -6,19 +6,19 @@ SSH is a topic where there are some differences between Windows and Unix operati
 
 ## OpenSSH Client and Server
 
-The OpenSSH Client service is used to connect to remote machines, the OpenSSH Server is so remote machines can connect to the local machine. 
+The OpenSSH Client service is used to connect to remote machines, the OpenSSH Server is so remote machines can connect to the local machine.
 
 ### Linux
 
 Starting these services is simple in linux, for a Debian based distribution:
 
-`sudo /etc/init.d/ssh start` 
+`sudo /etc/init.d/ssh start`
 
-or 
+or
 
 `sudo service ssh start`
 
- or 
+or
 
 `sudo systemctl start ssh`
 
@@ -83,27 +83,33 @@ When you generate an SSH key pair on a machine it creates a pair of keys - the p
 
 SSH keys are a hash and can be saved in different file formats, [this link demonstrates the difference between *rsa* and *pem*.](https://hstechdocs.helpsystems.com/manuals/globalscape/eft7-3/mergedprojects/eft/server_ssh_key_formats.htm#:~:text=EFT%20imports%20the%20PEM%20format,key%20on%20a%20Linux%20computer.)
 
-### Connecting via ssh with a Key pair
-
-To connect to a remote machine via ssh using key based authentication:
-
-`ssh -i [relative/path/to/identity/file] [username]@[host/IP_address]`
-
-The path is relative to the directory the terminal is working in,
-
 ### Generating SSH Keys
 
-#### Linux
-
-To generate ssh key pairs on linux:
+To generate ssh key pairs:
 
 `ssh-keygen`
 
-You will be prompted with an option of where to save the key files `/home/[user]/.ssh/id_rsa`. Press enter to confirm. (The *.ssh* folder is where you will find the files used by the ssh client and server.) You will be prompted to enter a passphrase for the encryption generation, either leave it blank or choose a password and enter it twice. If you decide to make a password you will have to enter it whenever you use the key. The private key is id_rsa and the public key is id_rsa.pub.
+You will be prompted with an option of where to save the key files (`/home/[user]/.ssh/id_rsa` or `C:\Users\[user]/.ssh/id_rsa`). Press enter to confirm. (The *.ssh* folder is where you will find the files used by the ssh client and server.) You will be prompted to enter a passphrase for the encryption generation, either leave it blank or choose a password and enter it twice. If you decide to make a password you will have to enter it whenever you use the key. The private key is id_rsa and the public key is id_rsa.pub.
 
+Arguments and tags can be included in the ssh-keygen for more complex functionality. One such option is to specify the type of key generated with *-t*:
 
+`ssh-keygen -t [keytype]`
+
+Possible values are *dsa*, *ecdsa*, *ecdsa-sk*, *ed25519*, *ed25519-sk* and *rsa*.
+
+Remember that a key will only work with it's pair, if you lose the credentials you will have to generate a new key pair.
+
+### Connecting via ssh with a Key pair
+
+To connect to a remote machine via ssh using key based authentication and a public key file:
+
+`ssh -i [relative/path/to/identity/file] [username]@[host/IP_address]`
+
+The path is relative to the directory the terminal is working in.
 
 ### Copying a Key to a Remote Machine
+
+Public keys can also be saved to a remote machine's *.ssh* folder to save from specifying a key file when connecting.
 
 #### Linux
 
@@ -116,17 +122,38 @@ There is a command that can copy a generated public key to a remote authorized_k
 If `ssh-copy-id` is not available you will have to do it manually. Password authentication must be enabled for this process:
 
 ```
+cat ~/.ssh/id_rsa.pub
+# prints your public key to the terminal output
+ssh [username]@[host/IP_address]
+# ssh into remote machine, password will be prompted
+mkdir -p ~/.ssh
+# creates .ssh folder on remote machine
+nano ~/.ssh/authorized_keys
+# opens the authorized_keys file, paste the key hash as one line and save the file.
+exit
+# exit ssh session
+ssh [username]@[host/IP_address]
+# test if it worked
 ```
 
 To perform this process in one line of code (you will have to enter the password):
 
 `cat ~/.ssh/id_rsa.pub | ssh [username]@[host/IP_address] "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys"`
 
+The file should have a new key on a new line, prefixed with it's type. The keytype will be *ssh-dss*, *ssh-rsa*, *ecdsa-sha2-nistp256*, *ecdsa-sha2- nistp384*, or *ecdsa-sha2-nistp521*, *ssh-ed25519*.
+
+Each entry will look like:
+
+`[keytype] [long_hash] [user@machine_name]`
+
+
 #### Windows 10
 
 
 
-## config file
+## The .ssh/config File
+
+`C:\Users\[user]\.ssh\config`
 
 Used to store ssh login details for various machines, this is a critical file when using Visual Studio Code
 
@@ -140,7 +167,7 @@ Host vm2
   HostName 20.217.131.177
   User azureuser
   IdentityFile "C:\directory\to\key\\vm2_key.pem"
-Host Hack
+Host hack
   HostName team3.uksouth.cloudapp.azure.com
   User hacker3
 ```
@@ -151,7 +178,8 @@ HostName - The actual host or IP address.
 User - Username
 
 IdentityFile - The location of a public key file (*.pem* etc)
-## authorized_keys
+
+You can then ssh into one of the specified machines using `ssh [Host]`.
 
 ## Copying files to a remote machine
 
