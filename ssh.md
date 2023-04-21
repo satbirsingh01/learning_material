@@ -57,7 +57,7 @@ if (!(Get-NetFirewallRule -Name "OpenSSH-Server-In-TCP" -ErrorAction SilentlyCon
 }
 ```
 
-You can then connect using `ssh 
+You can then connect to a remote machine via ssh. 
 
 ## Connecting via SSH
 
