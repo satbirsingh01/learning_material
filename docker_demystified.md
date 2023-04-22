@@ -215,7 +215,7 @@ To remove a stopped container:
 
 To enter the shell of the container:
 
-`docker exec -it [container] bash`
+`docker exec -it [container] /bin/sh`
 
 To see the logs of a container:
 
@@ -241,17 +241,113 @@ To kill a container:
 
 `docker kill [container]`
 
+## Deploying an Application Using Multiple Containers
+
+First a network will have to be created for the docker containers to see each other:
+
+`docker network create [network_name]`
+
+The default network created is a bridge. For other options see the [documentation](https://docs.docker.com/network/).
+
+When initialising your containers you will need to include the network tag after the run command:
+
+`docker run --network=[network_name] [image]`
+
+The containers will be started connected to the internal Docker network that you have created.
 
 ## Bind Mounts
 
-## Deploying an Application Using Multiple Containers
+### Volumes vs Bind Mounts
 
 ## Docker Compose
 
+Docker Compose is a tool used for running multiple container applications. Rules are declared in a YAML file which Docker Compose can then read and apply. This can streamline deployment. It is included in modern versions of Docker.
+
+### Configuring the *docker-compose.yml* File
+
+Example shamelessly stolen from [here](https://docs.linuxserver.io/general/docker-compose):
+
+```
+version: "2.1"
+services:
+  heimdall:
+    image: linuxserver/heimdall
+    container_name: heimdall
+    volumes:
+      - /home/user/appdata/heimdall:/config
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+    ports:
+      - 80:80
+      - 443:443
+    restart: unless-stopped
+  nginx:
+    image: linuxserver/nginx
+    container_name: nginx
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+    volumes:
+      - /home/user/appdata/nginx:/config
+    ports:
+      - 81:80
+      - 444:443
+    restart: unless-stopped
+  mariadb:
+    image: linuxserver/mariadb
+    container_name: mariadb
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - MYSQL_ROOT_PASSWORD=ROOT_ACCESS_PASSWORD
+      - TZ=Europe/London
+    volumes:
+      - /home/user/appdata/mariadb:/config
+    ports:
+      - 3306:3306
+    restart: unless-stopped
+```
+
+### Deployment and Management with Docker Compose
+
+To deploy using docker compose, navigate to the directory your *docker-compose.yml* file is stored and run:
+
+`docker-compose up -d`
+
+*-d* is detached mode.
+
+If the yaml file is named differently, use the *-f* file tag:
+
+`docker-compose -f /path/to/file.yml up -d`
+
+To stop the services and preserve networks and containers:
+
+`docker-compose stop`
+
+To bring down the services created and destroy the containers:
+
+`docker-compose down`
+
+To update images and recreate the containers as needed:
+
+```
+docker compose pull
+docker compose up -d
+```
+
 ## Docker Swarm
 
-## Docker GUI
+Docker Swarm is a container orchestration tool. When dealing with larger scale projects, such orchestration is an essential time saver, being able to spin up and connect multiple containers quickly and in one go.
+
+### Docker Swarm vs Kubernetes
+
+Another popular orchestration tool is Kubernetes, which will be covered in another document. The two have a few differences and use cases worth noting.
 
 ## Docker and Cloud Services
+
+## Example of deploying an app with docker
 
 ## Epilogue
