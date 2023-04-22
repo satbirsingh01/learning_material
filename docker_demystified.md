@@ -95,8 +95,99 @@ docker tag my_image myRegistry.com/myImage
 docker push myRegistry.com/myImage
 ```
 
+## Building Your Own Image
+
+### Dockerfile
+
+In order to containerise an application with Docker, the project's root directory must have a Dockerfile, a file named Dockerfile with no extension. The instructions contained in this file are used by Docker to formulate an image.
+
+A nice explanation of Dockerfile syntax can be found [here](https://medium.com/bb-tutorials-and-thoughts/docker-a-beginners-guide-to-dockerfile-with-a-sample-project-6c1ac1f17490).
+
+Important Dockerfile commands, [full docs here](https://docs.docker.com/engine/reference/builder/):
+
+```
+# - Comments.
+
+FROM - The base image your app will be built on .
+
+CMD - Gives commands after the build stage, there should only be one CMD per Dockerfile.
+
+WORKDIR - Working directory for the app.
+
+ENV - Set environmental variables `ENV variable=value`.
+
+COPY - Copy files from the host system to the container `COPY . .` copies all the current dir to the working directory in the container.
+
+RUN - Runs terminal commands in the build stage against the image. For each run command Docker creates an intermediary image and runs each command as another layer above it. If you have an apt update and an apt install in run commands, make sure they are on the same line.
+
+LABEL - Add label to image `LABEL ["label_name"]=["label_message"]
+
+EXPOSE - Doesn't actually do anything but it tells the human reading it which ports to publish with the docker run -p 
+
+USER - Username to run in, if not specified defaults to root
+
+VOLUME - The specified directory will persist following the destruction of the container, remaining on the host system.
+
+ARG - creates a variable for use in the Dockerfile
+
+ADD - Adds files from host system or URLs to the container, can also extract compressed files. COPY is generally a safer option.
+
+```
+
+#### .dockerignore
+
+Working in the same way as .gitignore files, add files or directories to a .dockerignore in the same directory as the Dockerfile so that they are not incorporated into the image.
+
+#### Docker file example:
+
+```
+# 1. pick a Node 16 image
+FROM node:16-alpine
+# 2. set a working directory
+RUN mkdir -p /exampleApp/ && \
+    apk update
+WORKDIR /exampleApp/
+# 3. declare all the environmental variables needed
+ENV DATABASE_HOST=postgresExampleApp
+ENV DATABASE_PORT=5432
+ENV DATABASE_USERNAME=postgres
+ENV DATABASE_PASSWORD=foo
+ENV DATABASE_NAME=postgres
+# 4. copy the app into the work directory
+COPY . /exampleApp/
+# 5. install all the packages needed for NodeJS
+RUN npm install
+# 6. expose the port needed
+EXPOSE 3000
+# 7. start the app
+CMD [ "npm", "start" ]
+```
+
+To then build an image of the project, move to the directory of the Dockerfile and run:
+
+`docker build -t [image_tag] .`
+
+The trailing full stop is necessary to select all the files in the directory.
+
+## Creating Containers
+
+`docker run -dp [host_port]:[container_port] [image_tag]`
+
+`docker run -dp 3000:3000 exampleApp`
+
+The *-d* tag runs the container in detached mode, in the background. The *-p* tag is the port. The Dockerfile example above exposes port 3000 in the container. The run command above then maps the container's port 3000 to the host machine's port 3000. *-i* will give you an interactive terminal
+
+To ensure the container is not accessible from outside the machine, you have to bind the port to the host:
+
+`docker run -p 127.0.0.1:3000:3000 exampleApp`
+
+Use `docker ps` to check if your container is running.
+
 ## Managing Containers
-ps, image, prune, exec, run, rm, attach, export, kill, , rename, rmi, start, stop, 
+
+### exec, run, rm, attach, export, kill, , rename, rmi, start, stop, 
+
+To specify a container either use its name or id.
 
 To see which containers are running use:
 
@@ -106,39 +197,50 @@ To see all containers including those that are stopped you will need the 'all' t
 
 `docker ps -a`
 
-## Creating Containers
+To create a container from an image:
 
+`docker run [image]`
 
+To start a container:
 
-## Building Your Own Image
+`docker start [container]`
 
-### Dockerfile
+To stop a container:
 
-In order to compile a project into a docker image, the project's root directory must have a Dockerfile, a file named Dockerfile with no extension. The instructions contained in this file are used by Docker to formulate an image.
+`docker stop container`
 
-Docker file example:
-```
-# 1. pick a Node 16 image
-FROM node:16-alpine
-# 2. set a working directory
-RUN mkdir -p /charity/
-WORKDIR /charity/
-# 3. declare all the environemnt variables needed
-ENV DATABASE_HOST=postgresCharity
-ENV DATABASE_HOST=postgresCharity
-ENV DATABASE_PORT=5432
-ENV DATABASE_USERNAME=postgres
-ENV DATABASE_PASSWORD=foo
-ENV DATABASE_NAME=postgres
-# 4. copy the app into the work directory
-COPY . /charity/
-# 5. install all the packages needed for NodeJS
-RUN npm install
-# 6. expose the port needed
-EXPOSE 3000
-# 7. start the app
-CMD [ "npm", "start" ]
-```
+To remove a stopped container:
+
+`docker rm [container]`
+
+To enter the shell of the container:
+
+`docker exec -it [container] bash`
+
+To see the logs of a container:
+
+`docker logs [container]`
+
+To copy between the host and container:
+
+`docker container cp [container:source/path] [host/destination/path]`
+
+To export a container filesystem as a tar:
+
+`docker container export [container]`
+
+To rename a container:
+
+`docker container rename [old_name] [new_name]`
+
+To see detailed information about a container:
+
+`docker inspect [container]`
+
+To kill a container:
+
+`docker kill [container]`
+
 
 ## Bind Mounts
 
